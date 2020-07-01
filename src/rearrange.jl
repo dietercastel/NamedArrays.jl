@@ -122,3 +122,20 @@ function _sortslices(A::NamedArray, d::Val{dims}; kws...) where dims
         B
     end
 end
+
+import Base.deleteat!
+
+
+function deleteat!(n::N, key) where {T,N<:NamedVector{T}}
+		idx= n.dicts[1][key]
+		deleteat!(n.array,idx)
+		delete!(n.dicts[1],key)
+		return n
+end
+
+function deleteat!(n::N, i::Integer) where {T,N<:NamedVector{T}}
+		key = collect(n.dicts[1])[i][1]
+		deleteat!(n.array,i)
+		delete!(n.dicts[1],key)
+		return n
+end
