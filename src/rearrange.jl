@@ -124,12 +124,27 @@ function _sortslices(A::NamedArray, d::Val{dims}; kws...) where dims
 end
 
 import Base.deleteat!
+using IterTools
 
+function restn(it, n::Int)
+		if n == 1
+				return it
+		else 
+				f,rest = IterTools.firstrest(it)
+				return restn(rest,n-1)
+		end
+end
 
 function deleteat!(n::N, key) where {T,N<:NamedVector{T}}
 		idx= n.dicts[1][key]
 		deleteat!(n.array,idx)
+		#delete the key
 		delete!(n.dicts[1],key)
+		#and update all the 
+		toshift = restn(values(n.dicts[1]),idx)	
+		map!(v->v-1,toshift)
+		# TODO: problem here map! from OrderedCollections
+		# doesn't support the Base.Iterators.Rest{Base.ValueIterator{OrderedDict{String,Int64}},Int64}
 		return n
 end
 

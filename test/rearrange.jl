@@ -81,3 +81,13 @@ end
 nn = NamedArray([ 2 1 4; 1 2 3; 2 1 3 ])
 @test names(sortslices(nn, dims=1), 1) == ["2", "3", "1"]
 @test names(sortslices(nn, dims=2), 2) == ["2", "1", "3"]
+
+
+@testset begin "deleteat! for vectors"
+
+dn1 = copy(n[:,1])
+@test deleteat!(dn1, "one") == n[2,2]
+@test deleteat!(dn1, "two") == NamedArray([])
+
+dn2 = copy(n[:,2])
+
